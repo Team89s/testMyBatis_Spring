@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 1.加载外部属性文件 -->
+    <context:property-placeholder location="db.properties"></context:property-placeholder>
+
+    <!-- 2.配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="user" value="${db.username}"></property>
+        <property name="password" value="${db.password}"></property>
+        <property name="jdbcUrl" value="${db.jdbcUrl}"></property>
+        <property name="driverClass" value="${db.driverClass}"></property>
+    </bean>
+
+    <!-- 3.配置会话工厂实例 -->
+    <bean id="factory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 配置数据源 -->
+        <property name="dataSource" ref="dataSource"></property>
+        <!-- 加载MyBatis核心配置文件 -->
+        <property name="configLocation" value="mybatis/SqlMapConfig.xml"></property>
+    </bean>
+
+    <!-- 4.配置Mapper的扫描包 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 指定mapper的扫描包，为其生成代理对象 -->
+        <property name="basePackage" value="com.igeek.ssm.mapper"></property>
+        <!-- 加载会话工厂实例，此处使用value引用值 -->
+        <property name="sqlSessionFactoryBeanName" value="factory"></property>
+    </bean>
+
+    <!-- 5.配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 配置数据源 -->
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!-- 6.开启事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans>
