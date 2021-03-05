@@ -49,9 +49,15 @@ class ItemsMapperTest {
 
     @Test
     void updateByExampleWithBLOBs() {  //BLOBs  大文本，MySQL数据类型text
-    }
-
-    @Test
-    void updateByPrimaryKey() {
+        //1.查询Items对象，并修改部分字段
+        Items items = itemsMapper.selectByPrimaryKey(1);
+        items.setDetail("今天风和日丽，适宜跑步....");
+        //items.setName(null);
+        //2.创建条件
+        ItemsExample itemsExample = new ItemsExample();
+        ItemsExample.Criteria criteria = itemsExample.createCriteria();
+        criteria.andIdEqualTo(1);
+        //3.执行
+        itemsMapper.updateByExampleWithBLOBs(items,itemsExample);
     }
 }

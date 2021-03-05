@@ -5,6 +5,10 @@
 <configuration>
 
     <!-- 开启全局参数配置 -->
+    <settings>
+        <!-- 开启驼峰式命名 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
 
     <!-- 配置别名 -->
     <typeAliases>
